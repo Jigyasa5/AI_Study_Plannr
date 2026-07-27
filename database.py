@@ -23,6 +23,16 @@ CREATE TABLE IF NOT EXISTS tasks (
 )
 """)
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS study_plans(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    subject TEXT,
+    exam_date TEXT,
+    hours INTEGER
+)
+""")
+
 conn.commit()
 conn.close()
 

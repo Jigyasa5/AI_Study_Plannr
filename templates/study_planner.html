@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Planner</title>
+</head>
+<body>
+
+<h1>Generate Study Plan</h1>
+
+<form action="/generate_plan" method="POST">
+
+    <input
+        type="text"
+        name="subject"
+        placeholder="Subject"
+        required
+    >
+
+    <br><br>
+
+    <input
+        type="date"
+        name="exam_date"
+        required
+    >
+
+    <br><br>
+
+    <input
+        type="number"
+        name="hours"
+        placeholder="Study Hours"
+        required
+    >
+
+    <br><br>
+
+    <button>Generate</button>
+
+</form>
+
+</body>
+</html>

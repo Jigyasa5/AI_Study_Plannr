@@ -55,7 +55,8 @@ def login():
         conn.close()
 
         if user:
-            session["user"] = user[1]
+            session["user_id"] = user[0]      # store user ID
+            session["user_name"] = user[1]    # store user name
             return redirect("/dashboard")
 
         return "Invalid Email or Password"
@@ -67,18 +68,13 @@ def login():
 @app.route("/dashboard")
 def dashboard():
 
-    if "user" not in session:
+    if "user_id" not in session:
         return redirect("/login")
 
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT id FROM users WHERE name=?",
-        (session["user"],)
-    )
-
-    user_id = cursor.fetchone()[0]
+    user_id = session["user_id"]
 
     cursor.execute(
         "SELECT * FROM tasks WHERE user_id=?",
@@ -91,7 +87,7 @@ def dashboard():
 
     return render_template(
         "dashboard.html",
-        name=session["user"],
+        name=session["user_name"],
         tasks=tasks
     )
 
@@ -99,7 +95,7 @@ def dashboard():
 @app.route("/add_task", methods=["POST"])
 def add_task():
 
-    if "user" not in session:
+    if "user_id" not in session:
         return redirect("/login")
 
     task = request.form["task"]
@@ -108,12 +104,7 @@ def add_task():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT id FROM users WHERE name=?",
-        (session["user"],)
-    )
-
-    user_id = cursor.fetchone()[0]
+    user_id = session["user_id"]
 
     cursor.execute(
         "INSERT INTO tasks(user_id, task_name, deadline, status) VALUES(?,?,?,?)",
@@ -159,12 +150,75 @@ def complete_task(id):
 
     return redirect("/dashboard")
 
+#---------------- STUDY PLANNER ----------------
+@app.route("/study_planner")
+def study_planner():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    return render_template("study_planner.html")
+
+#---------------- Generate Plan ----------------
+@app.route("/generate_plan", methods=["POST"])
+def generate_plan():
+
+    subject = request.form["subject"]
+    exam = request.form["exam_date"]
+    hours = request.form["hours"]
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO study_plans(user_id, subject, exam_date, hours)
+        VALUES(?,?,?,?)
+        """,
+        (
+            session["user_id"],
+            subject,
+            exam,
+            hours
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/view_plan")
+
+#---------------- View Plan ----------------
+@app.route("/view_plan")
+def view_plan():
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT subject, exam_date, hours
+        FROM study_plans
+        WHERE user_id=?
+        """,
+        (session["user_id"],)
+    )
+
+    plans = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "view_plan.html",
+        plans=plans
+    )
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():
 
-    session.pop("user", None)
+    session.pop("user_id", None)
+    session.pop("user_name", None)
 
     return redirect("/login")
 

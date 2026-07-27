@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Plan</title>
+</head>
+
+<body>
+
+<h1>Your Study Plan</h1>
+
+<table border="1">
+
+<tr>
+<th>Subject</th>
+<th>Exam Date</th>
+<th>Hours</th>
+</tr>
+
+{% for plan in plans %}
+
+<tr>
+
+<td>{{ plan[0] }}</td>
+<td>{{ plan[1] }}</td>
+<td>{{ plan[2] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>
