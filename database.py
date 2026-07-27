@@ -12,6 +12,17 @@ CREATE TABLE IF NOT EXISTS users (
 )
 """)
 
+# Tasks table
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    task_name TEXT,
+    deadline TEXT,
+    status TEXT
+)
+""")
+
 conn.commit()
 conn.close()
 

@@ -70,7 +70,94 @@ def dashboard():
     if "user" not in session:
         return redirect("/login")
 
-    return render_template("dashboard.html", name=session["user"])
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT id FROM users WHERE name=?",
+        (session["user"],)
+    )
+
+    user_id = cursor.fetchone()[0]
+
+    cursor.execute(
+        "SELECT * FROM tasks WHERE user_id=?",
+        (user_id,)
+    )
+
+    tasks = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "dashboard.html",
+        name=session["user"],
+        tasks=tasks
+    )
+
+## Add Task
+@app.route("/add_task", methods=["POST"])
+def add_task():
+
+    if "user" not in session:
+        return redirect("/login")
+
+    task = request.form["task"]
+    deadline = request.form["deadline"]
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT id FROM users WHERE name=?",
+        (session["user"],)
+    )
+
+    user_id = cursor.fetchone()[0]
+
+    cursor.execute(
+        "INSERT INTO tasks(user_id, task_name, deadline, status) VALUES(?,?,?,?)",
+        (user_id, task, deadline, "Pending")
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
+
+## Delete Task
+@app.route("/delete_task/<int:id>")
+def delete_task(id):
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM tasks WHERE id=?",
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
+
+## Complete Task
+@app.route("/complete_task/<int:id>")
+def complete_task(id):
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE tasks SET status='Completed' WHERE id=?",
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
 
 
 # ---------------- LOGOUT ----------------

@@ -8,7 +8,76 @@
 
 <h1>Welcome {{ name }}</h1>
 
-<h3>AI Study Planner Dashboard</h3>
+<h2>Add Task</h2>
+
+<form action="/add_task" method="POST">
+
+    <input
+        type="text"
+        name="task"
+        placeholder="Task Name"
+        required
+    >
+
+    <input
+        type="date"
+        name="deadline"
+        required
+    >
+
+    <button>Add</button>
+
+</form>
+
+<hr>
+
+<h2>Your Tasks</h2>
+
+<table border="1">
+
+<tr>
+
+<th>Task</th>
+
+<th>Deadline</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+</tr>
+
+{% for task in tasks %}
+
+<tr>
+
+<td>{{ task[2] }}</td>
+
+<td>{{ task[3] }}</td>
+
+<td>{{ task[4] }}</td>
+
+<td>
+
+<a href="/complete_task/{{ task[0] }}">
+Complete
+</a>
+
+|
+
+<a href="/delete_task/{{ task[0] }}">
+Delete
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
 
 <a href="/logout">Logout</a>
 
