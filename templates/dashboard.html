@@ -1,86 +1,145 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<h1>Welcome {{ name }}</h1>
+<nav>
+    <h2>AI Study Planner</h2>
 
-<h2>Add Task</h2>
+    <div>
+        <a href="/study_planner">Study Planner</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
 
-<form action="/add_task" method="POST">
+<div class="container">
 
-    <input
-        type="text"
-        name="task"
-        placeholder="Task Name"
-        required
-    >
+    <h1>Welcome {{ name }}</h1>
 
-    <input
-        type="date"
-        name="deadline"
-        required
-    >
+    <!-- Statistics -->
+    <div class="stats">
 
-    <button>Add</button>
+        <div class="stat-card">
+            <h3>Total Tasks</h3>
+            <h1>{{ total }}</h1>
+        </div>
 
-</form>
+        <div class="stat-card">
+            <h3>Completed</h3>
+            <h1>{{ completed }}</h1>
+        </div>
 
-<hr>
+        <div class="stat-card">
+            <h3>Pending</h3>
+            <h1>{{ pending }}</h1>
+        </div>
 
-<h2>Your Tasks</h2>
+    </div>
 
-<table border="1">
+    <!-- Progress -->
+    <div class="card">
+        <h2>Study Progress</h2>
 
-<tr>
+        <div class="progress">
+            <div class="progress-fill" style="width: {{ progress }}%;">
+                {{ progress }}%
+            </div>
+        </div>
+    </div>
 
-<th>Task</th>
+    <!-- Add Task -->
+    <div class="card">
 
-<th>Deadline</th>
+        <h2>Add Task</h2>
 
-<th>Status</th>
+        <form action="/add_task" method="POST">
 
-<th>Action</th>
+            <input
+                type="text"
+                name="task"
+                placeholder="Task Name"
+                required>
 
-</tr>
+            <input
+                type="date"
+                name="deadline"
+                required>
 
-{% for task in tasks %}
+            <button type="submit">Add Task</button>
 
-<tr>
+        </form>
 
-<td>{{ task[2] }}</td>
+    </div>
 
-<td>{{ task[3] }}</td>
+    <!-- Tasks -->
+    <div class="card">
 
-<td>{{ task[4] }}</td>
+        <h2>Your Tasks</h2>
 
-<td>
+        <table>
 
-<a href="/complete_task/{{ task[0] }}">
-Complete
-</a>
+            <tr>
+                <th>Task</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
 
-|
+            {% for task in tasks %}
 
-<a href="/delete_task/{{ task[0] }}">
-Delete
-</a>
+            <tr>
 
-</td>
+                <td>{{ task[2] }}</td>
+                <td>{{ task[3] }}</td>
+                <td>{{ task[4] }}</td>
 
-</tr>
+                <td>
 
-{% endfor %}
+                    {% if task[4] != "Completed" %}
+                    <a class="btn complete" href="/complete_task/{{ task[0] }}">
+                        Complete
+                    </a>
+                    {% endif %}
 
-</table>
+                    <a class="btn delete" href="/delete_task/{{ task[0] }}">
+                        Delete
+                    </a>
 
-<br>
+                </td>
 
-<a href="/logout">Logout</a>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <!-- Analytics -->
+    <div class="card">
+
+        <h2>Task Analytics</h2>
+
+        <canvas
+            id="taskChart"
+            data-completed="{{ completed }}"
+            data-pending="{{ pending }}">
+        </canvas>
+
+    </div>
+
+</div>
+
+<!-- Your JavaScript -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 </html>

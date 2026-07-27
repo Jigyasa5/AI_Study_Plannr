@@ -1,19 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Study Planner</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 <body>
 
-<h1>Welcome to AI Study Planner</h1>
+<nav>
+    <h2>AI Study Planner</h2>
 
-<a href="/signup">Signup</a>
+    <div>
+        <a href="/login">Login</a>
+        <a href="/signup">Signup</a>
+    </div>
+</nav>
 
-<br><br>
+<div class="hero">
 
-<a href="/login">Login</a>
+    <h1>Plan Smarter. Study Better.</h1>
+
+    <p>
+        Organize your tasks, generate AI-powered study plans,
+        track progress and stay productive.
+    </p>
+
+    <a href="/signup">Get Started</a>
+
+    <a href="/login">Login</a>
+
+</div>
 
 </body>
 </html>

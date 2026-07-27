@@ -252,5 +252,23 @@ form{
 .hero h1{
     font-size:36px;
 }
+.progress{
+    width:100%;
+    height:30px;
+    background:#ddd;
+    border-radius:30px;
+    overflow:hidden;
+    margin-top:15px;
+}
+
+.progress-fill{
+    height:100%;
+    background:#4f46e5;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.5s;
+}
 
 }

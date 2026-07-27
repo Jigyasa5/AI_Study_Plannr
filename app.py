@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, render_template, request, redirect, session, flash
 
 app = Flask(__name__)
 app.secret_key = "studyplanner"
@@ -12,23 +14,33 @@ def home():
 # ---------------- SIGNUP ----------------
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+
     if request.method == "POST":
+
         name = request.form["name"]
         email = request.form["email"]
-        password = request.form["password"]
+        password = generate_password_hash(request.form["password"])
 
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
 
-        cursor.execute(
-            "INSERT INTO users(name,email,password) VALUES(?,?,?)",
-            (name, email, password)
-        )
+        try:
+            cursor.execute(
+                "INSERT INTO users(name, email, password) VALUES(?,?,?)",
+                (name, email, password)
+            )
 
-        conn.commit()
-        conn.close()
+            conn.commit()
 
-        return redirect("/login")
+            flash("Registration Successful! Please login.", "success")
+            return redirect("/login")
+
+        except sqlite3.IntegrityError:
+            flash("Email already registered. Please login.", "danger")
+            return redirect("/signup")
+
+        finally:
+            conn.close()
 
     return render_template("signup.html")
 
@@ -46,20 +58,22 @@ def login():
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT * FROM users WHERE email=? AND password=?",
-            (email, password)
+            "SELECT * FROM users WHERE email=?", (email,)
         )
 
         user = cursor.fetchone()
 
         conn.close()
 
-        if user:
+        if user and check_password_hash(user[3], password):
             session["user_id"] = user[0]      # store user ID
             session["user_name"] = user[1]    # store user name
             return redirect("/dashboard")
 
-        return "Invalid Email or Password"
+        flash("Invalid Email or Password","danger")
+        return redirect("/login")
+    
+    
 
     return render_template("login.html")
 
@@ -83,13 +97,25 @@ def dashboard():
 
     tasks = cursor.fetchall()
 
+    total = len(tasks)
+    completed = sum(1 for task in tasks if task[4] == "Completed")
+    pending = total - completed
+
+    progress = 0
+    if total > 0:
+     progress = int((completed / total) * 100)
+
     conn.close()
 
     return render_template(
-        "dashboard.html",
-        name=session["user_name"],
-        tasks=tasks
-    )
+    "dashboard.html",
+    name=session["user_name"],
+    tasks=tasks,
+    total=total,
+    completed=completed,
+    pending=pending,
+    progress=progress
+)
 
 ## Add Task
 @app.route("/add_task", methods=["POST"])
@@ -104,15 +130,13 @@ def add_task():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    user_id = session["user_id"]
-
     cursor.execute(
         "INSERT INTO tasks(user_id, task_name, deadline, status) VALUES(?,?,?,?)",
-        (user_id, task, deadline, "Pending")
+        (session["user_id"], task, deadline, "Pending")
     )
 
     conn.commit()
-    conn.close()
+    conn.close()          # Make sure this line exists!
 
     return redirect("/dashboard")
 
@@ -220,6 +244,7 @@ def logout():
     session.pop("user_id", None)
     session.pop("user_name", None)
 
+    flash("Logged Out Successfully","success")
     return redirect("/login")
 
 

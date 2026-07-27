@@ -1,39 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Signup</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
+
 <body>
 
-<h1>Signup</h1>
+<div class="auth-box">
+
+<h2>Create Account</h2>
 
 <form method="POST">
 
-    <input
-        type="text"
-        name="name"
-        placeholder="Enter Name"
-        required
-    ><br><br>
+<input
+type="text"
+name="name"
+placeholder="Full Name"
+required>
 
-    <input
-        type="email"
-        name="email"
-        placeholder="Enter Email"
-        required
-    ><br><br>
+<input
+type="email"
+name="email"
+placeholder="Email"
+required>
 
-    <input
-        type="password"
-        name="password"
-        placeholder="Enter Password"
-        required
-    ><br><br>
+<input
+type="password"
+name="password"
+placeholder="Password"
+required>
 
-    <button type="submit">Signup</button>
+<button type="submit">
+
+Sign Up
+
+</button>
 
 </form>
+
+<br>
+
+Already have an account?
+
+<a href="/login">Login</a>
+
+</div>
 
 </body>
 </html>
