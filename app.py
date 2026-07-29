@@ -9,7 +9,7 @@ app.secret_key = "studyplanner"
 def init_db():
     print("Creating database tables...")
 
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -46,7 +46,7 @@ def init_db():
     conn.close()
 
     print("Database initialized successfully.")
-    
+
 @app.route("/")
 def home():
     return render_template("index.html")
