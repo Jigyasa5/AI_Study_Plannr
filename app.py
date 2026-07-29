@@ -7,49 +7,46 @@ from gemini_ai import generate_plan as ai_generate_plan
 app = Flask(__name__)
 app.secret_key = "studyplanner"
 def init_db():
-    conn = sqlite3.connect("database.db")
+    print("Creating database tables...")
+
+    conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
-    # Users table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
-        )
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    )
     """)
 
-    # Tasks table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            task_name TEXT NOT NULL,
-            deadline TEXT,
-            status TEXT DEFAULT 'Pending',
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        )
+    CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        task_name TEXT,
+        deadline TEXT,
+        status TEXT
+    )
     """)
 
-    # Study plans table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS study_plans (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            subject TEXT NOT NULL,
-            exam_date TEXT,
-            hours TEXT,
-            plan TEXT,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        )
+    CREATE TABLE IF NOT EXISTS study_plans (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        subject TEXT,
+        exam_date TEXT,
+        hours TEXT,
+        plan TEXT
+    )
     """)
 
     conn.commit()
     conn.close()
 
-init_db()
-
+    print("Database initialized successfully.")
+    
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -306,4 +303,5 @@ def logout():
 
 
 if __name__ == "__main__":
+    init_db()
     app.run(debug=True)
