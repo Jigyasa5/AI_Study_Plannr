@@ -1,40 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Study Planner</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Study Planner</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
+
 <body>
 
-<h1>Generate Study Plan</h1>
-<form action="/generate_ai_plan" method="POST">
+<nav>
 
-    <input type="text"
-           name="subject"
-           placeholder="Subject"
-           required>
+    <h2>AI Study Planner</h2>
 
-    <input type="date"
-           name="exam_date"
-           required>
+    <div>
 
-    <input type="number"
-           name="hours"
-           placeholder="Hours Per Day"
-           required>
+        <a href="/dashboard">Dashboard</a>
 
-    <select name="difficulty">
-        <option>Easy</option>
-        <option>Medium</option>
-        <option>Hard</option>
-    </select>
+        <a href="/logout">Logout</a>
 
-    <button type="submit">
-        Generate AI Plan
-    </button>
+    </div>
 
-</form>
+</nav>
+
+<div class="planner-container">
+
+    <div class="planner-card">
+
+        <h1>Create Your AI Study Plan</h1>
+
+        <p class="planner-text">
+            Fill in the details below and let AI generate a personalized study schedule based on your goals.
+        </p>
+
+        <form action="/generate_ai_plan" method="POST">
+
+            <div class="input-group">
+
+                <label>Subject</label>
+
+                <input
+                type="text"
+                name="subject"
+                placeholder="e.g. Data Structures"
+                required>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>Exam Date</label>
+
+                <input
+                type="date"
+                name="exam_date"
+                required>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>Study Hours / Day</label>
+
+                <input
+                type="number"
+                min="1"
+                max="12"
+                name="hours"
+                placeholder="4"
+                required>
+            </div>
+            <div class="input-group">
+                <label>Difficulty</label>
+                <select name="difficulty">
+                    <option>Easy</option>
+                    <option>Medium</option>
+                    <option>Hard</option>
+                </select>
+            </div>
+            <button type="submit" class="generate-btn">
+                Generate Plan
+            </button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-left">
+
+            <h2>AI Study Planner</h2>
+
+            <p>
+                Organize your learning, track your progress,
+                and let AI create personalized study plans.
+            </p>
+
+        </div>
+
+        <div class="footer-links">
+
+            <h3>Quick Links</h3>
+
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/study_planner">Study Planner</a>
+
+        </div>
+
+        
+
+    </div>
+
+    <hr>
+
+    <p class="copyright">
+        © 2026 AI Study Planner | Designed & Developed by
+        <strong>Jigyasa</strong>
+    </p>
+
+</footer>
 
 </body>
+
 </html>

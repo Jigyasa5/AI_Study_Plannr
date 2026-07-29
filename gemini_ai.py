@@ -11,21 +11,32 @@ client = genai.Client(
 def generate_plan(subject, exam_date, hours, difficulty):
 
     prompt = f"""
-Create a personalized study plan.
+    Create a personalized study plan.
 
-Subject: {subject}
-Exam Date: {exam_date}
-Hours Per Day: {hours}
-Difficulty: {difficulty}
+    Subject: {subject}
+    Exam Date: {exam_date}
+    Study Hours Per Day: {hours}
+    Difficulty: {difficulty}
 
-Generate:
-1. Daily timetable
-2. Weekly goals
-3. Revision strategy
-4. Important topics
-5. Motivation tips
+    Return ONLY valid HTML.
 
-Format the response neatly using headings and bullet points.
+    Requirements:
+    - Use <h2> for section headings.
+    - Use <h3> for subsection headings.
+    - Use <p> for paragraphs.
+    - Use <ul><li> for bullet points.
+    - Use <table>, <tr>, <th>, and <td> for the daily timetable.
+    - Use <strong> to highlight important points.
+    - Do NOT use Markdown symbols such as #, ##, **, |, or ---.
+
+    Include:
+    1. Daily Timetable
+    2. Weekly Goals
+    3. Revision Strategy
+    4. Important Topics
+    5. Practice Plan
+    6. Motivation Tips
+
 """
 
     response = client.models.generate_content(
