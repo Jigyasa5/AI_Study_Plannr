@@ -272,3 +272,23 @@ form{
 }
 
 }
+
+#timer{
+
+    font-size:60px;
+
+    text-align:center;
+
+    margin:25px 0;
+
+    color:#4f46e5;
+
+}
+
+#startBtn,
+#pauseBtn,
+#resetBtn{
+
+    margin:5px;
+
+}

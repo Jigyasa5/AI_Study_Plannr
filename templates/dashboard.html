@@ -62,16 +62,9 @@
 
         <form action="/add_task" method="POST">
 
-            <input
-                type="text"
-                name="task"
-                placeholder="Task Name"
-                required>
+            <input type="text" name="task" placeholder="Task Name" required>
 
-            <input
-                type="date"
-                name="deadline"
-                required>
+            <input type="date" name="deadline" required>
 
             <button type="submit">Add Task</button>
 
@@ -104,14 +97,10 @@
                 <td>
 
                     {% if task[4] != "Completed" %}
-                    <a class="btn complete" href="/complete_task/{{ task[0] }}">
-                        Complete
-                    </a>
+                    <a class="btn complete" href="/complete_task/{{ task[0] }}">Complete</a>
                     {% endif %}
 
-                    <a class="btn delete" href="/delete_task/{{ task[0] }}">
-                        Delete
-                    </a>
+                    <a class="btn delete" href="/delete_task/{{ task[0] }}">Delete</a>
 
                 </td>
 
@@ -136,9 +125,30 @@
 
     </div>
 
+    <!-- Pomodoro Timer -->
+    <div class="card">
+
+        <h2>🍅 Pomodoro Timer</h2>
+
+        <h1 id="timer">25:00</h1>
+
+        <div class="timer-buttons">
+
+            <button id="startBtn">Start</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="resetBtn">Reset</button>
+
+        </div>
+
+        <h3 style="margin-top:20px;">
+            Sessions Completed:
+            <span id="sessions">0</span>
+        </h3>
+
+    </div>
+
 </div>
 
-<!-- Your JavaScript -->
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>

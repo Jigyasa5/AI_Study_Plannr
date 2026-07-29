@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, session, flash
+from gemini_ai import generate_plan as ai_generate_plan
 
 app = Flask(__name__)
 app.secret_key = "studyplanner"
@@ -183,34 +184,30 @@ def study_planner():
 
     return render_template("study_planner.html")
 
-#---------------- Generate Plan ----------------
-@app.route("/generate_plan", methods=["POST"])
-def generate_plan():
+
+# ---------------- Generate AI Plan ----------------
+@app.route("/generate_ai_plan", methods=["POST"])
+def generate_ai_plan():
+
+    if "user_id" not in session:
+        return redirect("/login")
 
     subject = request.form["subject"]
-    exam = request.form["exam_date"]
+    exam_date = request.form["exam_date"]
     hours = request.form["hours"]
+    difficulty = request.form["difficulty"]
 
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        INSERT INTO study_plans(user_id, subject, exam_date, hours)
-        VALUES(?,?,?,?)
-        """,
-        (
-            session["user_id"],
-            subject,
-            exam,
-            hours
-        )
+    plan = ai_generate_plan(
+        subject,
+        exam_date,
+        hours,
+        difficulty
     )
 
-    conn.commit()
-    conn.close()
-
-    return redirect("/view_plan")
+    return render_template(
+        "generate_plan.html",
+        plan=plan
+    )
 
 #---------------- View Plan ----------------
 @app.route("/view_plan")

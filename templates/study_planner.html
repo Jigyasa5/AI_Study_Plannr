@@ -8,36 +8,31 @@
 <body>
 
 <h1>Generate Study Plan</h1>
+<form action="/generate_ai_plan" method="POST">
 
-<form action="/generate_plan" method="POST">
+    <input type="text"
+           name="subject"
+           placeholder="Subject"
+           required>
 
-    <input
-        type="text"
-        name="subject"
-        placeholder="Subject"
-        required
-    >
+    <input type="date"
+           name="exam_date"
+           required>
 
-    <br><br>
+    <input type="number"
+           name="hours"
+           placeholder="Hours Per Day"
+           required>
 
-    <input
-        type="date"
-        name="exam_date"
-        required
-    >
+    <select name="difficulty">
+        <option>Easy</option>
+        <option>Medium</option>
+        <option>Hard</option>
+    </select>
 
-    <br><br>
-
-    <input
-        type="number"
-        name="hours"
-        placeholder="Study Hours"
-        required
-    >
-
-    <br><br>
-
-    <button>Generate</button>
+    <button type="submit">
+        Generate AI Plan
+    </button>
 
 </form>
 
