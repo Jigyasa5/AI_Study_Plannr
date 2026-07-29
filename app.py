@@ -3,13 +3,18 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, session, flash
 from gemini_ai import generate_plan as ai_generate_plan
+import os
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DATABASE = os.path.join(BASE_DIR, "database.db")
 
 app = Flask(__name__)
 app.secret_key = "studyplanner"
+
 def init_db():
     print("Creating database tables...")
 
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -46,6 +51,7 @@ def init_db():
     conn.close()
 
     print("Database initialized successfully.")
+    init_db()
 
 @app.route("/")
 def home():
@@ -302,6 +308,7 @@ def logout():
     return redirect("/login")
 
 
+
 if __name__ == "__main__":
-    init_db()
+    
     app.run(debug=True)
