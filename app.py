@@ -6,6 +6,49 @@ from gemini_ai import generate_plan as ai_generate_plan
 
 app = Flask(__name__)
 app.secret_key = "studyplanner"
+def init_db():
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    # Users table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    """)
+
+    # Tasks table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            task_name TEXT NOT NULL,
+            deadline TEXT,
+            status TEXT DEFAULT 'Pending',
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    """)
+
+    # Study plans table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS study_plans (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            subject TEXT NOT NULL,
+            exam_date TEXT,
+            hours TEXT,
+            plan TEXT,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+init_db()
 
 @app.route("/")
 def home():
@@ -203,6 +246,23 @@ def generate_ai_plan():
         hours,
         difficulty
     )
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(""" 
+    INSERT INTO study_plans(user_id, subject, exam_date, hours, plan)
+    VALUES (?, ?, ?, ?, ?)
+    """, (
+    session["user_id"],
+    subject,
+    exam_date,
+    hours,
+    plan
+    ))
+
+    conn.commit()
+    conn.close()
 
     return render_template(
         "generate_plan.html",
